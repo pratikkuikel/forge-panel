@@ -6,7 +6,9 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "calebporzio/sushi": "^2.4",
         "filament/filament": "^3.2",
+        "laravel/forge-sdk": "^3.18",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9"
     },

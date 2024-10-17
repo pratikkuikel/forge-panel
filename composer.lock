@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "466daff0ecd827572660cb185025041e",
+    "content-hash": "51262baa97cc8227e0b1f9072c03bd88",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -281,6 +281,58 @@
                 }
             ],
             "time": "2023-11-29T23:19:16+00:00"
+        },
+        {
+            "name": "calebporzio/sushi",
+            "version": "v2.4.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/calebporzio/sushi.git",
+                "reference": "932d09781bff75c812541d2d269400fd7d730bab"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/calebporzio/sushi/zipball/932d09781bff75c812541d2d269400fd7d730bab",
+                "reference": "932d09781bff75c812541d2d269400fd7d730bab",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^5.8 || ^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0 || ^11.0",
+                "illuminate/support": "^5.8 || ^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0 || ^11.0",
+                "php": "^7.1.3|^8.0"
+            },
+            "require-dev": {
+                "doctrine/dbal": "^2.9 || ^3.1.4",
+                "orchestra/testbench": "3.8.* || 3.9.* || ^4.0 || ^6.0 || ^7.0 || ^8.0 || ^9.0",
+                "phpunit/phpunit": "^7.5 || ^8.4 || ^9.0 || ^10.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sushi\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Caleb Porzio",
+                    "email": "calebporzio@gmail.com"
+                }
+            ],
+            "description": "Eloquent's missing \"array\" driver.",
+            "support": {
+                "source": "https://github.com/calebporzio/sushi/tree/v2.4.5"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/calebporzio",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-10-17T14:42:34+00:00"
         },
         {
             "name": "carbonphp/carbon-doctrine-types",
@@ -2024,6 +2076,80 @@
                 "source": "https://github.com/kirschbaum-development/eloquent-power-joins/tree/4.0.0"
             },
             "time": "2024-10-06T12:28:14+00:00"
+        },
+        {
+            "name": "laravel/forge-sdk",
+            "version": "v3.18.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/forge-sdk.git",
+                "reference": "d22e6acd86a1bdea01602105d17d4bb22b55870e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/forge-sdk/zipball/d22e6acd86a1bdea01602105d17d4bb22b55870e",
+                "reference": "d22e6acd86a1bdea01602105d17d4bb22b55870e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "guzzlehttp/guzzle": "^6.3.1|^7.0",
+                "php": "^7.2|^8.0"
+            },
+            "require-dev": {
+                "illuminate/support": "^7.0|^8.0|^9.0|^10.0|^11.0",
+                "mockery/mockery": "^1.3.1",
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^8.4|^9.0|^10.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Forge\\ForgeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Forge\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                },
+                {
+                    "name": "Mohamed Said",
+                    "email": "mohamed@laravel.com"
+                },
+                {
+                    "name": "Dries Vints",
+                    "email": "dries@laravel.com"
+                },
+                {
+                    "name": "James Brooks",
+                    "email": "james@laravel.com"
+                }
+            ],
+            "description": "The official Laravel Forge PHP SDK.",
+            "keywords": [
+                "forge",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/forge-sdk/issues",
+                "source": "https://github.com/laravel/forge-sdk"
+            },
+            "time": "2024-09-30T12:09:46+00:00"
         },
         {
             "name": "laravel/framework",
