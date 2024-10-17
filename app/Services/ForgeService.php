@@ -52,10 +52,15 @@ class ForgeService
                 ];
             })
                 ->reject(function ($site) use ($site_ids) {
-                    // Exclude sites with matching IDs
-                    return !in_array($site['id'], $site_ids);
+                    // Include sites with matching ids and excludes those that don't match
+                    if (!empty($site_ids)) {
+                        return !in_array($site['id'], $site_ids);
+                    }
+                    return false;
                 })
                 ->toArray();
+
+            info($mappedSites);
 
             $sites = [...$sites, ...$mappedSites];
         }
