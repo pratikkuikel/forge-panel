@@ -24,7 +24,9 @@ class Site extends Model
     public static function getSitesForUser()
     {
         if (auth()->user()->role === Role::TEAMMATE->value) {
-            self::$site_ids = auth()->user()->sites;
+            self::$site_ids = auth()->user()->sites ?? [];
+
+            return static::query();
         }
 
         return static::query();
