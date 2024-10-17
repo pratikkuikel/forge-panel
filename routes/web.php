@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Services\ForgeService;
 
 Route::get('/', function () {
+    return redirect()->route('filament.app.auth.login');
     $forge = ForgeService::make();
     // dd(Server::all()->pluck('name', 'id'));
     dd($forge->getAllSites());
