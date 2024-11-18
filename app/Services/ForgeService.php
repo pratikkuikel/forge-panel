@@ -85,4 +85,9 @@ class ForgeService
     {
         return $this->site($server_id, $site_id)->siteLog();
     }
+
+    public function deleteSiteLog($server_id, $site_id)
+    {
+        return $this->site($server_id, $site_id)->deleteSiteLog();
+    }
 }

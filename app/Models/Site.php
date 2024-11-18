@@ -45,4 +45,10 @@ class Site extends Model
         return ForgeService::make()
             ->getSiteLog($server_id, $this->id);
     }
+
+    public function deleteSiteLog($server_id)
+    {
+        return ForgeService::make()
+            ->deleteSiteLog($server_id, $this->id);
+    }
 }
