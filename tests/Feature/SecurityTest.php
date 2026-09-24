@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use App\Role;
+use App\Services\ForgeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -31,4 +32,17 @@ it('allows administrators to access any Forge site', function () {
     $admin = User::factory()->create(['role' => Role::ADMIN->value]);
 
     expect($admin->canAccessForgeSite(456))->toBeTrue();
+});
+
+it('renders the sites page with Filament components', function () {
+    $forge = Mockery::mock(ForgeService::class);
+    $forge->shouldReceive('getAllSites')->once()->andReturn([]);
+
+    $this->app->instance(ForgeService::class, $forge);
+
+    $admin = User::factory()->create(['role' => Role::ADMIN->value]);
+
+    $this->actingAs($admin)
+        ->get(route('filament.app.pages.site'))
+        ->assertOk();
 });
