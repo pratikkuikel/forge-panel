@@ -1,9 +1,11 @@
 <?php
 
+use App\Filament\Pages\Site as SitePage;
 use App\Models\User;
 use App\Role;
 use App\Services\ForgeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
@@ -45,4 +47,30 @@ it('renders the sites page with Filament components', function () {
     $this->actingAs($admin)
         ->get(route('filament.app.pages.site'))
         ->assertOk();
+});
+
+it('opens the site log modal', function () {
+    $forge = Mockery::mock(ForgeService::class);
+    $forge->shouldReceive('getAllSites')->andReturn([
+        [
+            'id' => 123,
+            'server_id' => 456,
+            'name' => 'example.com',
+            'repository' => 'example/repository',
+            'repositoryBranch' => 'main',
+        ],
+    ]);
+    $forge->shouldReceive('getSiteLog')->once()->with(456, 123)->andReturn([
+        'content' => 'Example log',
+    ]);
+
+    $this->app->instance(ForgeService::class, $forge);
+
+    $admin = User::factory()->create(['role' => Role::ADMIN->value]);
+
+    $this->actingAs($admin);
+
+    Livewire::test(SitePage::class)
+        ->mountTableAction('view log', 123)
+        ->assertMountedActionModalSee(['Example log', 'Close']);
 });

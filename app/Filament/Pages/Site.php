@@ -6,7 +6,6 @@ use App\Models\Site as ModelsSite;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Actions\StaticAction;
 use Filament\Pages\Page;
 use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
@@ -45,7 +44,7 @@ class Site extends Page implements HasActions, HasTable
                         return view('hello-world', compact('log'));
                     })
                     ->modalWidth(Width::FiveExtraLarge)
-                    ->modalCancelAction(fn (StaticAction $action) => $action->label('Close')),
+                    ->modalCancelAction(fn (Action $action) => $action->label('Close')),
                 Action::make('delete log')
                     ->action(function (ModelsSite $record) {
                         $record->deleteSiteLog($record->server_id);
