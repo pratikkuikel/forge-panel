@@ -73,7 +73,9 @@ it('renders a site log on its own authorized Filament page', function () {
         ->assertOk()
         ->assertSee('Application log: example.com')
         ->assertSee('Example log')
-        ->assertSee('Fetched live from Laravel Forge');
+        ->assertSee('Fetched live from Laravel Forge')
+        ->assertSee('overflow: auto', escape: false)
+        ->assertSee('width: max-content', escape: false);
 });
 
 it('blocks teammates from viewing logs for unassigned sites', function () {
