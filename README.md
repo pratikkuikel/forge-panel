@@ -7,7 +7,7 @@
 - Follow Laravel installation steps
 - Migrate database
 - Create an admin user with `php artisan app:add-admin test@example.com`. The command securely prompts for the password so it is not exposed in shell history or process listings.
-- Put Forge api token in the .env file
+- Put the Forge API token in the `.env` file. If the token can access multiple organizations, also set `FORGE_ORGANIZATION` to the organization slug.
 - composer run dev OR php artisan serve
 - You are good to go.
 
