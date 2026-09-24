@@ -12,19 +12,7 @@ class Server extends Model
 
     public function getRows()
     {
-        $servers = ForgeService::make()
+        return ForgeService::make()
             ->getServers();
-
-        $servers = collect($servers)->map(function ($server) {
-            return [
-                'id' => $server->id,
-                'name' => $server->name,
-                'size' => $server->size,
-                'ipAddress' => $server->ipAddress,
-            ];
-        })
-            ->toArray();
-
-        return $servers;
     }
 }

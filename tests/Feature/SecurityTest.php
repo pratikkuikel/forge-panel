@@ -1,11 +1,10 @@
 <?php
 
-use App\Filament\Pages\Site as SitePage;
+use App\Filament\Pages\SiteLog;
 use App\Models\User;
 use App\Role;
 use App\Services\ForgeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
@@ -49,9 +48,9 @@ it('renders the sites page with Filament components', function () {
         ->assertOk();
 });
 
-it('opens the site log modal', function () {
+it('renders a site log on its own authorized Filament page', function () {
     $forge = Mockery::mock(ForgeService::class);
-    $forge->shouldReceive('getAllSites')->andReturn([
+    $forge->shouldReceive('getAllSites')->once()->with([123])->andReturn([
         [
             'id' => 123,
             'server_id' => 456,
@@ -70,7 +69,26 @@ it('opens the site log modal', function () {
 
     $this->actingAs($admin);
 
-    Livewire::test(SitePage::class)
-        ->mountTableAction('view log', 123)
-        ->assertMountedActionModalSee(['Example log', 'Close']);
+    $this->get(SiteLog::getUrl(['server' => 456, 'site' => 123]))
+        ->assertOk()
+        ->assertSee('Application log: example.com')
+        ->assertSee('Example log')
+        ->assertSee('Fetched live from Laravel Forge');
+});
+
+it('blocks teammates from viewing logs for unassigned sites', function () {
+    $forge = Mockery::mock(ForgeService::class);
+    $forge->shouldNotReceive('getAllSites');
+    $forge->shouldNotReceive('getSiteLog');
+
+    $this->app->instance(ForgeService::class, $forge);
+
+    $teammate = User::factory()->create([
+        'role' => Role::TEAMMATE->value,
+        'sites' => [999],
+    ]);
+
+    $this->actingAs($teammate)
+        ->get(SiteLog::getUrl(['server' => 456, 'site' => 123]))
+        ->assertForbidden();
 });

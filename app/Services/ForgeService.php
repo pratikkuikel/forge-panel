@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Forge\CursorPaginator;
 use Laravel\Forge\Forge;
 use RuntimeException;
@@ -33,7 +34,13 @@ class ForgeService
 
     public function getServers()
     {
-        return $this->all($this->forge->servers($this->organizationSlug()));
+        $organization = $this->organizationSlug();
+
+        return Cache::remember(
+            $this->cacheKey($organization, 'servers'),
+            $this->cacheTtl(),
+            fn () => $this->fetchServers($organization),
+        );
     }
 
     public function getAllSites($site_ids = [])
@@ -45,22 +52,7 @@ class ForgeService
             ->getServers();
 
         foreach ($servers as $server) {
-
-            $temp = $this->getSites($server->id);
-
-            $mappedSites = collect($temp)->map(function ($site) use ($server) {
-                return [
-                    'id' => $site->id,
-                    'server_id' => $server->id,
-                    'name' => $site->name,
-                    'repository' => is_array($site->repository)
-                        ? ($site->repository['url'] ?? null)
-                        : $site->repository,
-                    'repositoryBranch' => is_array($site->repository)
-                        ? ($site->repository['branch'] ?? null)
-                        : null,
-                ];
-            })
+            $mappedSites = collect($this->getSites($server['id']))
                 ->reject(function ($site) use ($siteIds) {
                     // Include sites with matching ids and excludes those that don't match
                     if (! empty($siteIds)) {
@@ -84,8 +76,12 @@ class ForgeService
 
     public function getSites($server_id)
     {
-        return $this->all(
-            $this->forge->serverSites($this->organizationSlug(), (int) $server_id)
+        $organization = $this->organizationSlug();
+
+        return Cache::remember(
+            $this->cacheKey($organization, 'servers', (int) $server_id, 'sites'),
+            $this->cacheTtl(),
+            fn () => $this->fetchSites($organization, (int) $server_id),
         );
     }
 
@@ -120,19 +116,64 @@ class ForgeService
             return $this->organizationSlug;
         }
 
-        $organizations = $this->forge->organizations()->items();
+        return $this->organizationSlug = Cache::remember(
+            $this->cacheKey('organization', hash('sha256', (string) config('forge.token'))),
+            $this->cacheTtl(),
+            function (): string {
+                $organizations = $this->forge->organizations()->items();
 
-        if (count($organizations) !== 1) {
-            throw new RuntimeException(
-                'Set FORGE_ORGANIZATION to the Forge organization slug when the token can access zero or multiple organizations.'
-            );
-        }
+                if (count($organizations) !== 1) {
+                    throw new RuntimeException(
+                        'Set FORGE_ORGANIZATION to the Forge organization slug when the token can access zero or multiple organizations.'
+                    );
+                }
 
-        return $this->organizationSlug = $organizations[0]->slug;
+                return $organizations[0]->slug;
+            },
+        );
     }
 
     protected function all(CursorPaginator $paginator): array
     {
         return iterator_to_array($paginator->lazy(), false);
+    }
+
+    protected function fetchServers(string $organization): array
+    {
+        return collect($this->all($this->forge->servers($organization)))
+            ->map(fn ($server): array => [
+                'id' => $server->id,
+                'name' => $server->name,
+                'size' => $server->size,
+                'ipAddress' => $server->ipAddress,
+            ])
+            ->all();
+    }
+
+    protected function fetchSites(string $organization, int $serverId): array
+    {
+        return collect($this->all($this->forge->serverSites($organization, $serverId)))
+            ->map(fn ($site): array => [
+                'id' => $site->id,
+                'server_id' => $serverId,
+                'name' => $site->name,
+                'repository' => is_array($site->repository)
+                    ? ($site->repository['url'] ?? null)
+                    : $site->repository,
+                'repositoryBranch' => is_array($site->repository)
+                    ? ($site->repository['branch'] ?? null)
+                    : null,
+            ])
+            ->all();
+    }
+
+    protected function cacheTtl(): int
+    {
+        return (int) config('forge.cache_ttl', 86400);
+    }
+
+    protected function cacheKey(string|int ...$parts): string
+    {
+        return 'forge:v1:'.implode(':', $parts);
     }
 }
