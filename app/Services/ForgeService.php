@@ -34,6 +34,7 @@ class ForgeService
     public function getAllSites($site_ids = [])
     {
         $sites = [];
+        $siteIds = array_map('strval', $site_ids);
 
         $servers = $this
             ->getServers();
@@ -51,11 +52,12 @@ class ForgeService
                     'repositoryBranch' => $site->repositoryBranch,
                 ];
             })
-                ->reject(function ($site) use ($site_ids) {
+                ->reject(function ($site) use ($siteIds) {
                     // Include sites with matching ids and excludes those that don't match
-                    if (!empty($site_ids)) {
-                        return !in_array($site['id'], $site_ids);
+                    if (! empty($siteIds)) {
+                        return ! in_array((string) $site['id'], $siteIds, true);
                     }
+
                     return false;
                 })
                 ->toArray();

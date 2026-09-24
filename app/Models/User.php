@@ -3,11 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Role;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Panel;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -18,7 +19,7 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'password',
         'role',
-        'sites'
+        'sites',
     ];
 
     protected $hidden = [
@@ -31,12 +32,23 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'sites' => 'array'
+            'sites' => 'array',
         ];
     }
 
     public function canAccessPanel(Panel $panel): bool
     {
         return true;
+    }
+
+    public function canAccessForgeSite(int|string $siteId): bool
+    {
+        if ($this->role === Role::ADMIN->value) {
+            return true;
+        }
+
+        $siteIds = array_map('strval', $this->sites ?? []);
+
+        return in_array((string) $siteId, $siteIds, true);
     }
 }

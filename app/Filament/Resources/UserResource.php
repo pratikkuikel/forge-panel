@@ -19,6 +19,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Validation\Rules\Password;
 
 class UserResource extends Resource
 {
@@ -38,13 +39,17 @@ class UserResource extends Resource
                 TextInput::make('name')
                     ->required(),
                 TextInput::make('email')
+                    ->email()
+                    ->unique(ignoreRecord: true)
                     ->required(),
                 TextInput::make('password')
                     ->password()
+                    ->rule(Password::min(12)->letters()->mixedCase()->numbers()->symbols())
                     ->dehydrated(fn ($state) => filled($state))
                     ->required(fn (Page $livewire) => ($livewire instanceof CreateRecord)),
                 Select::make('role')
-                    ->options(Role::class),
+                    ->options(Role::class)
+                    ->required(),
                 Select::make('sites')
                     ->options(ForgeService::make()->getSiteNames())
                     ->preload()

@@ -18,16 +18,21 @@ class Site extends Model
     public static function getSitesForServer($value)
     {
         self::$server_id = $value;
+
         return static::query();
     }
 
     public static function getSitesForUser()
     {
-        if (auth()->user()->role === Role::TEAMMATE->value) {
-            self::$site_ids = auth()->user()->sites ?? [];
+        $user = auth()->user();
+
+        if ($user->role === Role::TEAMMATE->value) {
+            self::$site_ids = $user->sites ?? [];
 
             return static::query();
         }
+
+        self::$site_ids = [];
 
         return static::query();
     }
@@ -42,13 +47,28 @@ class Site extends Model
 
     public function getSiteLog($server_id)
     {
+        abort_unless($this->isAccessibleToCurrentUser(), 403);
+
         return ForgeService::make()
             ->getSiteLog($server_id, $this->id);
     }
 
     public function deleteSiteLog($server_id)
     {
+        abort_unless($this->isAccessibleToCurrentUser(), 403);
+
         return ForgeService::make()
             ->deleteSiteLog($server_id, $this->id);
+    }
+
+    public function isAccessibleToCurrentUser(): bool
+    {
+        $user = auth()->user();
+
+        if (! $user) {
+            return false;
+        }
+
+        return $user->canAccessForgeSite($this->id);
     }
 }
