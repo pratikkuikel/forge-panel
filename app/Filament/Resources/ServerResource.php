@@ -3,43 +3,40 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ServerResource\Pages;
-use App\Filament\Resources\ServerResource\RelationManagers;
 use App\Models\Server;
 use App\Role;
-use Filament\Forms;
-use Filament\Forms\Form;
+use BackedEnum;
+use Filament\Actions\Action;
+use Filament\Actions\BulkActionGroup;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ServerResource extends Resource
 {
     protected static ?string $model = Server::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function canAccess(): bool
     {
         return auth()->user()->role === Role::ADMIN->value;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 //
             ]);
     }
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->columns([
+        return $schema
+            ->components([
                 TextEntry::make('id'),
                 TextEntry::make('name'),
                 TextEntry::make('size'),
@@ -59,12 +56,12 @@ class ServerResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\Action::make('view_sites')
-                    ->url(fn(Server $record) => route('sites-for-server', $record->id)),
+            ->recordActions([
+                Action::make('view_sites')
+                    ->url(fn (Server $record) => route('sites-for-server', $record->id)),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([]),
+            ->toolbarActions([
+                BulkActionGroup::make([]),
             ]);
     }
 

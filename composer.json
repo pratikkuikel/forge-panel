@@ -5,11 +5,11 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.4",
         "calebporzio/sushi": "^2.4",
-        "filament/filament": "^3.2",
+        "filament/filament": "^4.0",
         "laravel/forge-sdk": "^3.18",
-        "laravel/framework": "^11.9",
+        "laravel/framework": "^12.0",
         "laravel/tinker": "^2.9"
     },
     "require-dev": {
@@ -19,8 +19,8 @@
         "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.1",
-        "pestphp/pest": "^3.4",
-        "pestphp/pest-plugin-laravel": "^3.0"
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-laravel": "^4.0"
     },
     "autoload": {
         "psr-4": {
